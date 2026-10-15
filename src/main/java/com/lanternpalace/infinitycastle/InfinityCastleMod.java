@@ -18,9 +18,7 @@ public class InfinityCastleMod implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        // The feature is referenced by data/lantern_palace/worldgen/{configured,placed}_feature/castle.json and by the
-        // lantern_void biome, so it must be registered before the world's data registries load.
-        Registry.register(BuiltInRegistries.FEATURE, id("castle"), new CastleFeature());
+        Registry.register(BuiltInRegistries.FEATURE_TYPE, id("castle"), CastleFeature.CODEC);
         CastleCommands.register();
         PeacefulRules.register();
         TravelManager.register();
