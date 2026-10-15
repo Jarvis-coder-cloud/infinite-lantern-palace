@@ -2,28 +2,29 @@ package com.lanternpalace.infinitycastle.worldgen;
 
 import com.lanternpalace.infinitycastle.gen.Canvas;
 import com.lanternpalace.infinitycastle.gen.WorldPlan;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
 /**
  * Runs once per chunk during feature decoration (it is the only entry in the lantern_void biome's feature list).
- * It rasterises every structure overlapping *this* chunk and writes only inside this chunk's 16x16 column, so
+ * It rasterises every structure overlapping this chunk and writes only inside this chunk's 16x16 column, so
  * generation is seamless, deterministic (seed + coordinates only) and never touches neighbouring chunks.
  */
-public class CastleFeature extends Feature<NoneFeatureConfiguration> {
+public final class CastleFeature implements Feature {
+    public static final MapCodec<CastleFeature> CODEC = MapCodec.unit(new CastleFeature());
     private static final ThreadLocal<Canvas> CANVAS = ThreadLocal.withInitial(() -> new Canvas(0, 0));
 
-    public CastleFeature() {
-        super(NoneFeatureConfiguration.CODEC);
+    @Override
+    public MapCodec<? extends Feature> codec() {
+        return CODEC;
     }
 
     @Override
-    public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
-        WorldGenLevel level = context.level();
-        BlockPos origin = context.origin();
+    public boolean place(WorldGenLevel level, ChunkGenerator chunkGenerator, RandomSource random, BlockPos origin) {
         int cx = origin.getX() >> 4, cz = origin.getZ() >> 4;
         Canvas canvas = CANVAS.get();
         canvas.reset(cx, cz);
