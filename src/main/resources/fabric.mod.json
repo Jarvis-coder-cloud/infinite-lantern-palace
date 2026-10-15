@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "lantern_palace",
+  "version": "${version}",
+  "name": "Infinite Lantern Palace",
+  "description": "A peaceful, endless Infinity Castle dimension: a vast lantern-lit Japanese palace and hundreds of floating pagodas, castles and bridges in the void. No PvP, no hostile mobs.",
+  "authors": [
+    "Generated with Claude"
+  ],
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.lanternpalace.infinitycastle.InfinityCastleMod"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "minecraft": "~26.3",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
+}
