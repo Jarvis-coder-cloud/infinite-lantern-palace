@@ -1,0 +1,39 @@
+name: build
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v6
+      - name: validate gradle wrapper
+        uses: gradle/actions/wrapper-validation@v6
+      - name: setup jdk
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'microsoft'
+      - name: validate procedural generator
+        run: |
+          mkdir -p /tmp/gen-out
+          javac -d /tmp/gen-out $(find src/main/java/com/lanternpalace/infinitycastle/gen -name '*.java') tools/Validate.java
+          java -Djava.awt.headless=true -cp /tmp/gen-out Validate build/preview
+      - name: make gradle wrapper executable
+        run: chmod +x ./gradlew
+      - name: build mod
+        run: ./gradlew build --stacktrace
+      - name: upload mod jar
+        uses: actions/upload-artifact@v7
+        with:
+          name: infinity-castle-jar
+          path: |
+            build/libs/*.jar
+            !build/libs/*-sources.jar
+      - name: upload generator previews
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: generator-previews
+          path: build/preview/*.png
+          if-no-files-found: ignore
